@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -6,136 +5,125 @@
 <title>Sistem</title>
 
 <style>
-body {
-  margin:0;
+body{
   background:black;
   color:#00ff00;
   font-family:monospace;
   text-align:center;
-  overflow:hidden;
 }
 
-#game {
-  position:relative;
-  width:100%;
-  height:60vh;
+input,button{
+  margin:10px;
+  padding:10px;
+  background:black;
+  color:#00ff00;
+  border:1px solid #00ff00;
 }
 
-#target {
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  font-size:40px;
-}
-
-#dot {
-  position:absolute;
-  top:10%;
-  left:0%;
-  font-size:40px;
-}
-
-#img {
+#img{
   display:none;
   width:100%;
   height:100vh;
   object-fit:cover;
 }
 </style>
-
 </head>
+
 <body>
 
-<div id="screen">
-
-<h2>Align the dots</h2>
-<p>Press STOP when they match</p>
-
 <div id="game">
-  <div id="target">.</div>
-  <div id="dot">.</div>
-</div>
-
+<h2>LEVEL 1</h2>
+<p>5 + 7 = ?</p>
+<input id="a">
 <br>
-<button onclick="checkHit()">STOP</button>
-
+<button onclick="check1()">ENTER</button>
 </div>
 
-<img id="img" src="korku.jpg">
-<audio id="sound" src="scare.mp3"></audio>
+<img id="img" src="https://i.imgur.com/8wKQZ5k.jpg">
+<audio id="sound" src="https://www.myinstants.com/media/sounds/movie_1.mp3"></audio>
 
 <script>
-let dot = document.getElementById("dot");
-let pos = 0;
-let direction = 1;
 
-setInterval(() => {
-  pos += direction * 2;
+function scare(){
+  let img = document.getElementById("img");
+  let sound = document.getElementById("sound");
 
-  if(pos > 90 || pos < 0){
-    direction *= -1;
-  }
+  img.style.display="block";
+  sound.play();
+}
 
-  dot.style.left = pos + "%";
-}, 30);
-
-function checkHit(){
-  let dotPos = dot.getBoundingClientRect();
-  let target = document.getElementById("target").getBoundingClientRect();
-
-  let distance = Math.abs(dotPos.left - target.left);
-
-  if(distance < 20){
-    secondPuzzle();
-  } else {
-    jumpscare();
+// LEVEL 1
+function check1(){
+  let val = document.getElementById("a").value;
+  if(val == "12"){
+    level2();
+  }else{
+    scare();
   }
 }
 
-function jumpscare(){
-  let audio = document.getElementById("sound");
-  audio.currentTime = 0;
-  audio.play();
-
-  document.body.style.background="white";
-
-  setTimeout(()=>{
-    document.body.style.background="black";
-    secondPuzzle();
-  },300);
-}
-
-function secondPuzzle(){
-  document.getElementById("screen").innerHTML = `
-  <h2 style="color:red;">LEVEL 2</h2>
-  <p>İlk durakta 19 kişi indi ve 17 kişi bindi.</p>
-  <p>Şu anda trende 63 kişi var.</p>
-  <p>Başlangıçta kaç kişi vardı?</p>
+// LEVEL 2
+function level2(){
+  document.getElementById("game").innerHTML = `
+  <h2>LEVEL 2</h2>
+  <p>10 × 6 = ?</p>
   <input id="b">
-  <br><br>
+  <br>
   <button onclick="check2()">ENTER</button>
   `;
 }
 
 function check2(){
   let val = document.getElementById("b").value;
-
-  if(val == "65"){
-    document.getElementById("screen").innerHTML="<h1>YOU ESCAPED 😎</h1>";
-  } else {
-    showImage();
+  if(val == "60"){
+    level3();
+  }else{
+    scare();
   }
 }
 
-function showImage(){
-  let audio = document.getElementById("sound");
-  audio.currentTime = 0;
-  audio.play();
-
-  document.getElementById("screen").style.display="none";
-  document.getElementById("img").style.display="block";
+// LEVEL 3 (mantık)
+function level3(){
+  document.getElementById("game").innerHTML = `
+  <h2>LEVEL 3</h2>
+  <p>3, 6, 12, 24, ?</p>
+  <input id="c">
+  <br>
+  <button onclick="check3()">ENTER</button>
+  `;
 }
+
+function check3(){
+  let val = document.getElementById("c").value;
+  if(val == "48"){
+    captcha();
+  }else{
+    scare();
+  }
+}
+
+// ROBOT TESTİ 😈
+function captcha(){
+  document.getElementById("game").innerHTML = `
+  <h2>SON TEST</h2>
+  <p>Ben robot değilim kanıtla</p>
+  <p><b>Bu sayıyı yaz: 7392</b></p>
+  <input id="d">
+  <br>
+  <button onclick="finish()">DOĞRULA</button>
+  `;
+}
+
+function finish(){
+  let val = document.getElementById("d").value;
+
+  if(val == "7392"){
+    document.getElementById("game").innerHTML="<h1>KAÇTIN 😎</h1>";
+  }else{
+    scare();
+  }
+}
+
 </script>
 
 </body>
