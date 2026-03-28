@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<title>Sistem</title>
+<title>SİSTEM</title>
 
 <style>
 body{
@@ -10,6 +10,7 @@ body{
   color:#00ff00;
   font-family:monospace;
   text-align:center;
+  overflow:hidden;
 }
 
 input,button{
@@ -26,6 +27,18 @@ input,button{
   height:100vh;
   object-fit:cover;
 }
+
+.hack{
+  color:red;
+  font-size:30px;
+  animation:blink 0.2s infinite;
+}
+
+@keyframes blink{
+  0%{opacity:1;}
+  50%{opacity:0;}
+  100%{opacity:1;}
+}
 </style>
 </head>
 
@@ -33,7 +46,7 @@ input,button{
 
 <div id="game">
 <h2>LEVEL 1</h2>
-<p>5 + 7 = ?</p>
+<p>17 + 28 = ?</p>
 <input id="a">
 <br>
 <button onclick="check1()">ENTER</button>
@@ -55,10 +68,10 @@ function scare(){
 // LEVEL 1
 function check1(){
   let val = document.getElementById("a").value;
-  if(val == "12"){
+  if(val == "45"){
     level2();
   }else{
-    scare();
+    hackScreen();
   }
 }
 
@@ -66,7 +79,7 @@ function check1(){
 function level2(){
   document.getElementById("game").innerHTML = `
   <h2>LEVEL 2</h2>
-  <p>10 × 6 = ?</p>
+  <p>144 ÷ 12 = ?</p>
   <input id="b">
   <br>
   <button onclick="check2()">ENTER</button>
@@ -75,18 +88,18 @@ function level2(){
 
 function check2(){
   let val = document.getElementById("b").value;
-  if(val == "60"){
+  if(val == "12"){
     level3();
   }else{
-    scare();
+    hackScreen();
   }
 }
 
-// LEVEL 3 (mantık)
+// LEVEL 3 (zor mantık)
 function level3(){
   document.getElementById("game").innerHTML = `
   <h2>LEVEL 3</h2>
-  <p>3, 6, 12, 24, ?</p>
+  <p>2, 6, 7, 21, 22, ?</p>
   <input id="c">
   <br>
   <button onclick="check3()">ENTER</button>
@@ -95,19 +108,19 @@ function level3(){
 
 function check3(){
   let val = document.getElementById("c").value;
-  if(val == "48"){
+  if(val == "66"){
     captcha();
   }else{
-    scare();
+    hackScreen();
   }
 }
 
-// ROBOT TESTİ 😈
+// ROBOT TESTİ (zorlaştırılmış)
 function captcha(){
   document.getElementById("game").innerHTML = `
   <h2>SON TEST</h2>
-  <p>Ben robot değilim kanıtla</p>
-  <p><b>Bu sayıyı yaz: 7392</b></p>
+  <p>Robot değilsen çöz:</p>
+  <p><b>(9 × 7) + 13 = ?</b></p>
   <input id="d">
   <br>
   <button onclick="finish()">DOĞRULA</button>
@@ -117,11 +130,26 @@ function captcha(){
 function finish(){
   let val = document.getElementById("d").value;
 
-  if(val == "7392"){
+  if(val == "76"){
     document.getElementById("game").innerHTML="<h1>KAÇTIN 😎</h1>";
   }else{
-    scare();
+    hackScreen();
   }
+}
+
+// HACK EKRANI 😈
+function hackScreen(){
+  document.body.innerHTML = `
+  <h1 class="hack">SİSTEM HACKLENDİ</h1>
+  <p>Verilerin yükleniyor...</p>
+  `;
+
+  let sound = document.getElementById("sound");
+  if(sound) sound.play();
+
+  setTimeout(()=>{
+    scare();
+  },1500);
 }
 
 </script>
