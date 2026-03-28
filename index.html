@@ -2,42 +2,22 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<title>SİSTEM</title>
+<title>Bulmaca Oyunu</title>
 
 <style>
 body{
-  background:black;
+  background:#111;
   color:#00ff00;
   font-family:monospace;
   text-align:center;
-  overflow:hidden;
 }
 
 input,button{
   margin:10px;
   padding:10px;
-  background:black;
+  background:#222;
   color:#00ff00;
   border:1px solid #00ff00;
-}
-
-#img{
-  display:none;
-  width:100%;
-  height:100vh;
-  object-fit:cover;
-}
-
-.hack{
-  color:red;
-  font-size:30px;
-  animation:blink 0.2s infinite;
-}
-
-@keyframes blink{
-  0%{opacity:1;}
-  50%{opacity:0;}
-  100%{opacity:1;}
 }
 </style>
 </head>
@@ -46,32 +26,30 @@ input,button{
 
 <div id="game">
 <h2>LEVEL 1</h2>
-<p>17 + 28 = ?</p>
+<p>12 + 8 = ?</p>
 <input id="a">
 <br>
 <button onclick="check1()">ENTER</button>
 </div>
 
-<img id="img" src="https://i.imgur.com/8wKQZ5k.jpg">
-<audio id="sound" src="https://www.myinstants.com/media/sounds/movie_1.mp3"></audio>
+<!-- SES -->
+<audio id="wrongSound" src="kabe-hacilar-hu-der-allah-abdurrahman-onul-celal-karature.mp3"></audio>
 
 <script>
 
-function scare(){
-  let img = document.getElementById("img");
-  let sound = document.getElementById("sound");
-
-  img.style.display="block";
-  sound.play();
+function wrong(){
+  let s = document.getElementById("wrongSound");
+  s.currentTime = 0;
+  s.play();
 }
 
 // LEVEL 1
 function check1(){
-  let val = document.getElementById("a").value;
-  if(val == "45"){
+  let v = document.getElementById("a").value;
+  if(v == "20"){
     level2();
   }else{
-    hackScreen();
+    wrong();
   }
 }
 
@@ -79,7 +57,7 @@ function check1(){
 function level2(){
   document.getElementById("game").innerHTML = `
   <h2>LEVEL 2</h2>
-  <p>144 ÷ 12 = ?</p>
+  <p>9 × 3 = ?</p>
   <input id="b">
   <br>
   <button onclick="check2()">ENTER</button>
@@ -87,19 +65,19 @@ function level2(){
 }
 
 function check2(){
-  let val = document.getElementById("b").value;
-  if(val == "12"){
+  let v = document.getElementById("b").value;
+  if(v == "27"){
     level3();
   }else{
-    hackScreen();
+    wrong();
   }
 }
 
-// LEVEL 3 (zor mantık)
+// LEVEL 3
 function level3(){
   document.getElementById("game").innerHTML = `
   <h2>LEVEL 3</h2>
-  <p>2, 6, 7, 21, 22, ?</p>
+  <p>45 - 17 = ?</p>
   <input id="c">
   <br>
   <button onclick="check3()">ENTER</button>
@@ -107,49 +85,54 @@ function level3(){
 }
 
 function check3(){
-  let val = document.getElementById("c").value;
-  if(val == "66"){
-    captcha();
+  let v = document.getElementById("c").value;
+  if(v == "28"){
+    level4();
   }else{
-    hackScreen();
+    wrong();
   }
 }
 
-// ROBOT TESTİ (zorlaştırılmış)
-function captcha(){
+// LEVEL 4
+function level4(){
   document.getElementById("game").innerHTML = `
-  <h2>SON TEST</h2>
-  <p>Robot değilsen çöz:</p>
-  <p><b>(9 × 7) + 13 = ?</b></p>
+  <h2>LEVEL 4</h2>
+  <p>2, 4, 6, 8, ?</p>
   <input id="d">
+  <br>
+  <button onclick="check4()">ENTER</button>
+  `;
+}
+
+function check4(){
+  let v = document.getElementById("d").value;
+  if(v == "10"){
+    finalTest();
+  }else{
+    wrong();
+  }
+}
+
+// FINAL
+function finalTest(){
+  document.getElementById("game").innerHTML = `
+  <h2>SON</h2>
+  <p>Robot değilsen yaz:</p>
+  <p><b>ELMA</b></p>
+  <input id="e">
   <br>
   <button onclick="finish()">DOĞRULA</button>
   `;
 }
 
 function finish(){
-  let val = document.getElementById("d").value;
+  let v = document.getElementById("e").value.toUpperCase();
 
-  if(val == "76"){
-    document.getElementById("game").innerHTML="<h1>KAÇTIN 😎</h1>";
+  if(v == "ELMA"){
+    document.getElementById("game").innerHTML="<h1>TEBRİKLER 🎉</h1>";
   }else{
-    hackScreen();
+    wrong();
   }
-}
-
-// HACK EKRANI 😈
-function hackScreen(){
-  document.body.innerHTML = `
-  <h1 class="hack">SİSTEM HACKLENDİ</h1>
-  <p>Verilerin yükleniyor...</p>
-  `;
-
-  let sound = document.getElementById("sound");
-  if(sound) sound.play();
-
-  setTimeout(()=>{
-    scare();
-  },1500);
 }
 
 </script>
