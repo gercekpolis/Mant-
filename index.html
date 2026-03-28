@@ -1,10 +1,142 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="tr">
 <head>
-    <title>Benim Sitem</title>
+<meta charset="UTF-8">
+<title>Sistem</title>
+
+<style>
+body {
+  margin:0;
+  background:black;
+  color:#00ff00;
+  font-family:monospace;
+  text-align:center;
+  overflow:hidden;
+}
+
+#game {
+  position:relative;
+  width:100%;
+  height:60vh;
+}
+
+#target {
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  font-size:40px;
+}
+
+#dot {
+  position:absolute;
+  top:10%;
+  left:0%;
+  font-size:40px;
+}
+
+#img {
+  display:none;
+  width:100%;
+  height:100vh;
+  object-fit:cover;
+}
+</style>
+
 </head>
 <body>
-    <h1>Merhaba Dünya 🌍</h1>
-    <p>İlk web sitemi yaptım!</p>
+
+<div id="screen">
+
+<h2>Align the dots</h2>
+<p>Press STOP when they match</p>
+
+<div id="game">
+  <div id="target">.</div>
+  <div id="dot">.</div>
+</div>
+
+<br>
+<button onclick="checkHit()">STOP</button>
+
+</div>
+
+<img id="img" src="korku.jpg">
+<audio id="sound" src="scare.mp3"></audio>
+
+<script>
+let dot = document.getElementById("dot");
+let pos = 0;
+let direction = 1;
+
+setInterval(() => {
+  pos += direction * 2;
+
+  if(pos > 90 || pos < 0){
+    direction *= -1;
+  }
+
+  dot.style.left = pos + "%";
+}, 30);
+
+function checkHit(){
+  let dotPos = dot.getBoundingClientRect();
+  let target = document.getElementById("target").getBoundingClientRect();
+
+  let distance = Math.abs(dotPos.left - target.left);
+
+  if(distance < 20){
+    secondPuzzle();
+  } else {
+    jumpscare();
+  }
+}
+
+function jumpscare(){
+  let audio = document.getElementById("sound");
+  audio.currentTime = 0;
+  audio.play();
+
+  document.body.style.background="white";
+
+  setTimeout(()=>{
+    document.body.style.background="black";
+    secondPuzzle();
+  },300);
+}
+
+function secondPuzzle(){
+  document.getElementById("screen").innerHTML = `
+  <h2 style="color:red;">LEVEL 2</h2>
+  <p>İlk durakta 19 kişi indi ve 17 kişi bindi.</p>
+  <p>Şu anda trende 63 kişi var.</p>
+  <p>Başlangıçta kaç kişi vardı?</p>
+  <input id="b">
+  <br><br>
+  <button onclick="check2()">ENTER</button>
+  `;
+}
+
+function check2(){
+  let val = document.getElementById("b").value;
+
+  if(val == "65"){
+    document.getElementById("screen").innerHTML="<h1>YOU ESCAPED 😎</h1>";
+  } else {
+    showImage();
+  }
+}
+
+function showImage(){
+  let audio = document.getElementById("sound");
+  audio.currentTime = 0;
+  audio.play();
+
+  document.getElementById("screen").style.display="none";
+  document.getElementById("img").style.display="block";
+}
+</script>
+
 </body>
 </html>
