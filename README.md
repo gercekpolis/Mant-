@@ -1,0 +1,2 @@
+# Mant-
+Mantıyı seviyom
