@@ -2,164 +2,193 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<title>Bulmaca Oyunu PRO</title>
+<title>Sistem</title>
 
 <style>
 body{
-  background:#0a0a0a;
-  color:#00ffcc;
+  background:black;
+  color:#00ff00;
   font-family:monospace;
   text-align:center;
+  overflow:hidden;
 }
 
-#hud{
-  margin:10px;
-  font-size:18px;
-}
-
-input,button{
+button,input{
   margin:10px;
   padding:10px;
-  background:#111;
-  color:#00ffcc;
-  border:1px solid #00ffcc;
-  border-radius:5px;
+  background:black;
+  color:#00ff00;
+  border:1px solid #00ff00;
 }
 
-button:hover{
-  background:#00ffcc;
-  color:black;
+#terminal{
+  text-align:left;
+  padding:20px;
+  height:100vh;
+}
+
+.glitch{
+  font-size:40px;
+  animation: glitch 0.2s infinite;
+}
+
+@keyframes glitch{
+  0%{text-shadow:2px 2px red;}
+  50%{text-shadow:-2px -2px blue;}
+  100%{text-shadow:2px -2px green;}
 }
 </style>
 </head>
 
 <body>
 
-<div id="hud">
-❤️ Can: <span id="life">3</span> |
-🏆 Puan: <span id="score">0</span> |
-⏱️ Süre: <span id="time">10</span>
-</div>
-
-<div id="game"></div>
+<div id="terminal"></div>
 
 <audio id="wrongSound" src="kabe-hacilar-hu-der-allah-abdurrahman-onul-celal-karature.mp3"></audio>
+<audio id="loseSound" src="recep-tayyip-erdogan-ak-parti-secim-muzigi-2014-ugur-isilak-dombra.mp3" loop></audio>
 
 <script>
 
-let life = 3;
-let score = 0;
-let timer;
-let timeLeft = 10;
-
-// SORULAR
-let questions = [
-  {q:"12 + 8", a:"20"},
-  {q:"9 × 3", a:"27"},
-  {q:"45 - 17", a:"28"},
-  {q:"2,4,6,8, ?", a:"10"},
-  {q:"5 × 5", a:"25"},
-  {q:"30 ÷ 5", a:"6"}
+// HACKER BAŞLANGIÇ
+let lines = [
+  "Initializing system...",
+  "Bypassing firewall...",
+  "Security disabled...",
+  "Decrypting files...",
+  "Access granted ✔"
 ];
+
+let i = 0;
+
+function type(){
+  if(i < lines.length){
+    document.getElementById("terminal").innerHTML += lines[i] + "<br>";
+    i++;
+    setTimeout(type, 500);
+  }else{
+    setTimeout(startMenu, 1000);
+  }
+}
+type();
+
+// MENÜ
+function startMenu(){
+  document.body.innerHTML = `
+  <div id="game">
+    <h1 class="glitch">SYSTEM READY</h1>
+    <button onclick="startDots()">START</button>
+  </div>
+  `;
+}
+
+// DOT OYUNU
+let pos = 0;
+let dir = 1;
+let move;
+
+function startDots(){
+  document.getElementById("game").innerHTML = `
+  <h2>Align the dots</h2>
+  <p>Press STOP when they match</p>
+  <div style="position:relative;height:200px;">
+    <div id="target" style="position:absolute;left:50%;top:50%;">.</div>
+    <div id="dot" style="position:absolute;left:0%;top:50%;">.</div>
+  </div>
+  <button onclick="checkDot()">STOP</button>
+  `;
+
+  move = setInterval(()=>{
+    pos += dir * 2;
+    if(pos > 90 || pos < 0) dir *= -1;
+    document.getElementById("dot").style.left = pos + "%";
+  },30);
+}
+
+function checkDot(){
+  clearInterval(move);
+
+  let d = document.getElementById("dot").getBoundingClientRect();
+  let t = document.getElementById("target").getBoundingClientRect();
+
+  if(Math.abs(d.left - t.left) < 20){
+    startGame();
+  }else{
+    hackNow();
+  }
+}
+
+// ZOR PUZZLE
+let questions = [
+  {q:"2, 6, 7, 21, 22, ?", a:"66"},
+  {q:"5 makine 5 dakikada 5 ürün → 100 makine 100 dakikada?", a:"100"},
+  {q:"Saat 3:15 açı?", a:"7.5"},
+  {q:"1 kg pamuk mu ağır 1 kg demir mi?", a:"eşit"},
+  {q:"8 + 8 = 4 ise 6 + 6 = ?", a:"3"},
+  {q:"Bir baba 40, oğlu 10 → kaç yıl sonra 2 kat?", a:"20"}
+];
+
+questions = questions.sort(() => Math.random() - 0.5);
 
 let current = 0;
 
-// OYUN BAŞLAT
-function start(){
+// OYUN
+function startGame(){
+  document.body.innerHTML = `
+  <div id="play"></div>
+  `;
   showQuestion();
 }
 
-// SORU GÖSTER
 function showQuestion(){
   if(current >= questions.length){
     win();
     return;
   }
 
-  timeLeft = 10;
-  updateHUD();
-
-  document.getElementById("game").innerHTML = `
+  document.getElementById("play").innerHTML = `
     <h2>LEVEL ${current+1}</h2>
-    <p>${questions[current].q} = ?</p>
+    <p>${questions[current].q}</p>
     <input id="answer">
     <br>
     <button onclick="check()">ENTER</button>
   `;
-
-  startTimer();
 }
 
-// KONTROL
 function check(){
-  let val = document.getElementById("answer").value;
+  let v = document.getElementById("answer").value.toLowerCase().trim();
 
-  if(val == questions[current].a){
-    score += 10;
+  if(v.includes(questions[current].a)){
     current++;
     showQuestion();
   }else{
-    wrong();
+    hackNow();
   }
-
-  updateHUD();
 }
 
-// YANLIŞ
-function wrong(){
-  life--;
+// KAZAN
+function win(){
+  document.getElementById("play").innerHTML = `
+  <h1 class="glitch">YOU WIN 🎉</h1>
+  `;
+}
+
+// HACK ANINDA
+function hackNow(){
+
   let s = document.getElementById("wrongSound");
-  s.currentTime = 0;
   s.play();
 
-  if(life <= 0){
-    gameOver();
-  }
+  setTimeout(()=>{
+    document.body.innerHTML = `
+    <h1 class="glitch">YOU HAVE BEEN HACKED</h1>
+    <p>All data is being stolen...</p>
+    `;
 
-  updateHUD();
+    let recep = document.getElementById("loseSound");
+    recep.play();
+
+  },500);
 }
-
-// TIMER
-function startTimer(){
-  clearInterval(timer);
-
-  timer = setInterval(()=>{
-    timeLeft--;
-    updateHUD();
-
-    if(timeLeft <= 0){
-      wrong();
-      clearInterval(timer);
-      showQuestion();
-    }
-  },1000);
-}
-
-// HUD GÜNCELLE
-function updateHUD(){
-  document.getElementById("life").innerText = life;
-  document.getElementById("score").innerText = score;
-  document.getElementById("time").innerText = timeLeft;
-}
-
-// KAZANDIN
-function win(){
-  document.getElementById("game").innerHTML = `
-  <h1>TEBRİKLER 🎉</h1>
-  <p>Puanın: ${score}</p>
-  `;
-}
-
-// GAME OVER
-function gameOver(){
-  document.getElementById("game").innerHTML = `
-  <h1>OYUN BİTTİ 💀</h1>
-  <p>Puanın: ${score}</p>
-  `;
-}
-
-// BAŞLAT
-start();
 
 </script>
 
