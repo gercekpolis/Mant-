@@ -2,138 +2,164 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<title>Bulmaca Oyunu</title>
+<title>Bulmaca Oyunu PRO</title>
 
 <style>
 body{
-  background:#111;
-  color:#00ff00;
+  background:#0a0a0a;
+  color:#00ffcc;
   font-family:monospace;
   text-align:center;
+}
+
+#hud{
+  margin:10px;
+  font-size:18px;
 }
 
 input,button{
   margin:10px;
   padding:10px;
-  background:#222;
-  color:#00ff00;
-  border:1px solid #00ff00;
+  background:#111;
+  color:#00ffcc;
+  border:1px solid #00ffcc;
+  border-radius:5px;
+}
+
+button:hover{
+  background:#00ffcc;
+  color:black;
 }
 </style>
 </head>
 
 <body>
 
-<div id="game">
-<h2>LEVEL 1</h2>
-<p>12 + 8 = ?</p>
-<input id="a">
-<br>
-<button onclick="check1()">ENTER</button>
+<div id="hud">
+❤️ Can: <span id="life">3</span> |
+🏆 Puan: <span id="score">0</span> |
+⏱️ Süre: <span id="time">10</span>
 </div>
 
-<!-- SES -->
+<div id="game"></div>
+
 <audio id="wrongSound" src="kabe-hacilar-hu-der-allah-abdurrahman-onul-celal-karature.mp3"></audio>
 
 <script>
 
+let life = 3;
+let score = 0;
+let timer;
+let timeLeft = 10;
+
+// SORULAR
+let questions = [
+  {q:"12 + 8", a:"20"},
+  {q:"9 × 3", a:"27"},
+  {q:"45 - 17", a:"28"},
+  {q:"2,4,6,8, ?", a:"10"},
+  {q:"5 × 5", a:"25"},
+  {q:"30 ÷ 5", a:"6"}
+];
+
+let current = 0;
+
+// OYUN BAŞLAT
+function start(){
+  showQuestion();
+}
+
+// SORU GÖSTER
+function showQuestion(){
+  if(current >= questions.length){
+    win();
+    return;
+  }
+
+  timeLeft = 10;
+  updateHUD();
+
+  document.getElementById("game").innerHTML = `
+    <h2>LEVEL ${current+1}</h2>
+    <p>${questions[current].q} = ?</p>
+    <input id="answer">
+    <br>
+    <button onclick="check()">ENTER</button>
+  `;
+
+  startTimer();
+}
+
+// KONTROL
+function check(){
+  let val = document.getElementById("answer").value;
+
+  if(val == questions[current].a){
+    score += 10;
+    current++;
+    showQuestion();
+  }else{
+    wrong();
+  }
+
+  updateHUD();
+}
+
+// YANLIŞ
 function wrong(){
-  let s = document.getElementById("wrongSound"); // ✅ DÜZELTİLDİ
+  life--;
+  let s = document.getElementById("wrongSound");
   s.currentTime = 0;
   s.play();
-}
 
-// LEVEL 1
-function check1(){
-  let v = document.getElementById("a").value;
-  if(v == "20"){
-    level2();
-  }else{
-    wrong();
+  if(life <= 0){
+    gameOver();
   }
+
+  updateHUD();
 }
 
-// LEVEL 2
-function level2(){
+// TIMER
+function startTimer(){
+  clearInterval(timer);
+
+  timer = setInterval(()=>{
+    timeLeft--;
+    updateHUD();
+
+    if(timeLeft <= 0){
+      wrong();
+      clearInterval(timer);
+      showQuestion();
+    }
+  },1000);
+}
+
+// HUD GÜNCELLE
+function updateHUD(){
+  document.getElementById("life").innerText = life;
+  document.getElementById("score").innerText = score;
+  document.getElementById("time").innerText = timeLeft;
+}
+
+// KAZANDIN
+function win(){
   document.getElementById("game").innerHTML = `
-  <h2>LEVEL 2</h2>
-  <p>9 × 3 = ?</p>
-  <input id="b">
-  <br>
-  <button onclick="check2()">ENTER</button>
+  <h1>TEBRİKLER 🎉</h1>
+  <p>Puanın: ${score}</p>
   `;
 }
 
-function check2(){
-  let v = document.getElementById("b").value;
-  if(v == "27"){
-    level3();
-  }else{
-    wrong();
-  }
-}
-
-// LEVEL 3
-function level3(){
+// GAME OVER
+function gameOver(){
   document.getElementById("game").innerHTML = `
-  <h2>LEVEL 3</h2>
-  <p>45 - 17 = ?</p>
-  <input id="c">
-  <br>
-  <button onclick="check3()">ENTER</button>
+  <h1>OYUN BİTTİ 💀</h1>
+  <p>Puanın: ${score}</p>
   `;
 }
 
-function check3(){
-  let v = document.getElementById("c").value;
-  if(v == "28"){
-    level4();
-  }else{
-    wrong();
-  }
-}
-
-// LEVEL 4
-function level4(){
-  document.getElementById("game").innerHTML = `
-  <h2>LEVEL 4</h2>
-  <p>2, 4, 6, 8, ?</p>
-  <input id="d">
-  <br>
-  <button onclick="check4()">ENTER</button>
-  `;
-}
-
-function check4(){
-  let v = document.getElementById("d").value;
-  if(v == "10"){
-    finalTest();
-  }else{
-    wrong();
-  }
-}
-
-// FINAL
-function finalTest(){
-  document.getElementById("game").innerHTML = `
-  <h2>SON</h2>
-  <p>Robot değilsen yaz:</p>
-  <p><b>ELMA</b></p>
-  <input id="e">
-  <br>
-  <button onclick="finish()">DOĞRULA</button>
-  `;
-}
-
-function finish(){
-  let v = document.getElementById("e").value.toUpperCase();
-
-  if(v == "ELMA"){
-    document.getElementById("game").innerHTML="<h1>TEBRİKLER 🎉</h1>";
-  }else{
-    wrong();
-  }
-}
+// BAŞLAT
+start();
 
 </script>
 
